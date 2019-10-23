@@ -1,0 +1,50 @@
+doctype html
+
+html
+  head
+    title= title
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.css')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/icon?family=Material+Icons')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.js')
+  body
+    .navbar-fixed
+      nav
+        .nav-wrapper.purple
+          a.brand-logo(href='#') PubMag
+            i.large.material-icons public
+          a.sidenav-trigger(href='#', data-target='mobile-menu')
+            i.material-icons menu
+          ul#nav-mobile.right.hide-on-med-and-down
+            li
+              a(href='#') First
+            li
+              a(href='#') Second
+            li
+              a(href='#') Third
+            li
+              .input-field
+                input#search(type='search' required='')
+                label.label-icon(for='search')
+                  i.material-icons search
+          
+    ul.sidenav#mobile-menu
+      li
+        a(href='#') First
+      li
+        a(href='#') Second
+      li
+        a(href='#') Third
+      li
+        .divider
+      li
+        a(href='#') Search
+          i.material-icons search
+    main
+      block content
+    footer.page-footer
+      .container
+        p kek
+    .fixed-action-btn
+      a.btn-floating.btn-large.waves-effect.waves-light.pulse.waves-circle
+        i.material-icons.large question_answer
+    script M.AutoInit();
