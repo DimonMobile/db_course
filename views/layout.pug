@@ -5,12 +5,13 @@ html
     title= title
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.css')
     link(rel='stylesheet', href='https://fonts.googleapis.com/icon?family=Material+Icons')
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.js')
   body
     .navbar-fixed
       nav
         .nav-wrapper.purple
-          a.brand-logo(href='#') PubMag
+          a.brand-logo(href='/') PubMag
             i.large.material-icons public
           a.sidenav-trigger(href='#', data-target='mobile-menu')
             i.material-icons menu
@@ -22,12 +23,27 @@ html
             li
               a(href='#') Third
             li
+              a.dropdown-trigger(data-target='account-block', href='#') Account
+            li
               .input-field
                 input#search(type='search' required='')
                 label.label-icon(for='search')
                   i.material-icons search
-          
+
+    .dropdown-content#account-block
+      p kek        
+
     ul.sidenav#mobile-menu
+      li
+        .user-view
+          .background
+            img(src='images/backgrounds/1.jpeg')
+          a(href='#')
+            img.circle(src='images/icons/person-male.png')
+          a.white-text(href='#')
+            span.name Account-name
+          a(href='#')
+            span.white-text.email account@email
       li
         a(href='#') First
       li
@@ -41,9 +57,22 @@ html
           i.material-icons search
     main
       block content
+        p empty content
     footer.page-footer
       .container
-        p kek
+        .row
+          .col.s12.l6
+            h5.white-text Publishing house
+            p.grey-text.text-lighten-4 BSTU Oracle Database course project. Database access only via procedures. Backend part uses Node.js with express framweork
+          .col.s12.l4.offset-l2
+            h5 Links
+            ul
+              li
+                a.grey-text.text-lighten-3(href='/') Home
+              li
+                a.grey-text.text-lighten-3(href='/about') About
+      .footer-copyright
+        .container  © 2019 Dmitry Plotnikov
     .fixed-action-btn
       a.btn-floating.btn-large.waves-effect.waves-light.pulse.waves-circle
         i.material-icons.large question_answer
