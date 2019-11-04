@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/main', function(req, res, next) {
-  res.render('profile/main');
+router.get('/information', function(req, res, next) {
+  res.render('profile/information');
 });
 
 router.get('/posts', function(req, res, next) {
