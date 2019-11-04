@@ -5,24 +5,25 @@ html
     title= title
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.css')
     link(rel='stylesheet', href='https://fonts.googleapis.com/icon?family=Material+Icons')
+    link(rel='stylesheet', href='/stylesheets/style.css')
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.js')
   body
     .navbar-fixed
       nav
-        .nav-wrapper.brown
-          a.brand-logo(href='/').waves-effect PubMag
+        .nav-wrapper.blue
+          a.brand-logo(href='/').waves-effect.waves-light PubMag
             i.large.material-icons public
           a.sidenav-trigger(href='#', data-target='mobile-menu').waves-effect
             i.material-icons menu
           ul#nav-mobile.right.hide-on-med-and-down
-            li.waves-effect
+            li.waves-effect.waves-light
               a(href='#') First
-            li.waves-effect
+            li.waves-effect.waves-light
               a(href='#') Second
-            li.waves-effect
+            li.waves-effect.waves-light
               a(href='#') Third
-            li
+            li.waves-effect.waves-light
               a.modal-trigger.tooltipped(href='#account', data-tooltip='Account')
                 img.circle(src='images/icons/person-male.png', width='40' height='40' style='vertical-align: middle')
             li
@@ -32,23 +33,32 @@ html
                   i.material-icons search
 
     .modal#account
-      .modal-content
-          .row
-            .col.s6.input-field
-              input#email(type='text')
-              label(for='Email') Email
-            .col.s6.input-field
-              input#password(type='password')
-              label(for='Password') Password
-      .model-footer
-        a.btn.waves-effect(href='#') Sign in
+      form
+        .modal-content
+            .row
+              .col.s12
+                h4 Sign in
+              .col.s12.l6.input-field
+                i.material-icons.prefix account_circle
+                input#email(type='text')
+                label(for='Email') Email
+              .col.s12.l6.input-field
+                i.material-icons.prefix lock
+                input#password(type='password')
+                label(for='Password') Password
+              .col.s12
+                p If you using our service first time it's time to 
+                  a(href='/register') Sign up
+        .modal-footer
+          button.btn.waves-effect.waves-light Sign in
+            i.material-icons.right send
 
     ul.sidenav#mobile-menu
       li
         .user-view
           .background
             img(src='images/backgrounds/1.jpeg')
-          a(href='#')
+          a.modal-trigger(href='#account')
             img.circle(src='images/icons/person-male.png')
           a.white-text(href='#')
             span.name Account-name
@@ -68,7 +78,7 @@ html
     main
       block content
         p empty content
-    footer.page-footer
+    footer.page-footer.blue
       .container
         .row
           .col.s12.l6

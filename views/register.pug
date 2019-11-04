@@ -1,1 +1,60 @@
 extends layout
+block content
+  .container
+    form
+      .row
+        .col.s12
+          .input-field
+            i.material-icons.prefix email
+            input#email(type='text')
+            label(for='email') Email
+        .col.s12.l6
+          .input-field
+            i.material-icons.prefix lock
+            input#password(type='password')
+            label(for='password') Password
+        .col.s12.l6
+          .input-field
+            i.material-icons.prefix.hide-on-med-and-down lock
+            input#rep-password(type='password')
+            label(for='rep-password') Repeat password
+        .col.s12.l6
+          .input-field
+            i.material-icons.prefix account_circle
+            input#first-name(type='text')
+            label(for='first-name') First name
+        .col.s12.l6
+          .input-field
+            i.material-icons.prefix.hide-on-med-and-down account_circle
+            input#last-name(type='text')
+            label(for='last-name') Last name
+        .col.s12.l6
+          .input-field.tooltipped(data-tooltip='Nickname will be visible for all users')
+            i.material-icons.prefix account_box
+            input#nickname(type='text')
+            label(for='nickname') Nickname
+        .col.s6
+          .input-field
+            i.material-icons.prefix date_range
+            input#birthday.datepicker(type='text' minDate='01.01.1920')
+            label(for='birthday') Birthday
+        .col.s6.l12
+          .file-field.input-field
+            .btn-small
+              span File
+              input(type='file', accept="image/x-png,image/gif,image/jpeg")
+            .file-path-wrapper
+              input.file-path.validate(type='text', placeholder='Avatar icon')
+        .col.s12
+          .switch
+            label
+              input(type='checkbox')
+              span.lever
+              span I agree with 
+                a(href='#') license agreement
+        .col.s12
+          .switch
+            label
+              input(type='checkbox' checked='true')
+              span.lever
+              span Notify me about the new via my email address
