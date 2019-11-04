@@ -10,28 +10,38 @@ html
   body
     .navbar-fixed
       nav
-        .nav-wrapper.purple
-          a.brand-logo(href='/') PubMag
+        .nav-wrapper.brown
+          a.brand-logo(href='/').waves-effect PubMag
             i.large.material-icons public
-          a.sidenav-trigger(href='#', data-target='mobile-menu')
+          a.sidenav-trigger(href='#', data-target='mobile-menu').waves-effect
             i.material-icons menu
           ul#nav-mobile.right.hide-on-med-and-down
-            li
+            li.waves-effect
               a(href='#') First
-            li
+            li.waves-effect
               a(href='#') Second
-            li
+            li.waves-effect
               a(href='#') Third
             li
-              a.dropdown-trigger(data-target='account-block', href='#') Account
+              a.modal-trigger.tooltipped(href='#account', data-tooltip='Account')
+                img.circle(src='images/icons/person-male.png', width='40' height='40' style='vertical-align: middle')
             li
               .input-field
                 input#search(type='search' required='')
                 label.label-icon(for='search')
                   i.material-icons search
 
-    .dropdown-content#account-block
-      p kek        
+    .modal#account
+      .modal-content
+          .row
+            .col.s6.input-field
+              input#email(type='text')
+              label(for='Email') Email
+            .col.s6.input-field
+              input#password(type='password')
+              label(for='Password') Password
+      .model-footer
+        a.btn.waves-effect(href='#') Sign in
 
     ul.sidenav#mobile-menu
       li
