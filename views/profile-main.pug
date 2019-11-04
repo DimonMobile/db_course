@@ -1,0 +1,57 @@
+extends profile-layout
+
+block profile-selection
+  .row
+    .col.s12
+      h5.center-align Nickname
+  .row
+    .col.s12.l6
+      .input-field
+        input#profile-nickname(type='text' value='Test', readonly)
+        label(for='profile-first-name') First name
+    .col.s12.l6
+      .input-field
+        input#profile-nickname(type='text' value='Test', readonly)
+        label(for='profile-last-name') Last name
+  .row
+    .col.s3.l2
+      b Email:
+    .col.s4.l7
+      a(href='#') change
+    .col.s5.l3.truncate emailaddr@example.com
+
+  .row
+    .col.s3.l2
+      b Password:
+    .col.s4.l7
+      a(href='#') change
+    .col.s5.l3 ******
+
+  .row
+    .col.s3.l2
+      b Avatar:
+    .col.s4.l7
+      .file-field.input-field
+        .btn-small.waves-effect.waves-light
+          span Upload new
+          input(type='file' accept="image/x-png,image/gif,image/jpeg")
+    .col.s5.l3
+      img.circle.materialboxed(src='/images/icons/person-male.png', width=60)
+
+  .row
+    .col.s3.l2
+      b Group:
+    .col.s9.l10
+      .input-field
+        select
+          optgroup(label='Unactivated')
+            option Guest
+          optgroup(label='Activated')
+            option User
+            option Journalist
+            option Redactor
+            option Administrator
+  .row
+    .col
+      button.btn.waves-effect.waves-light Save
+        i.material-icons.left save

@@ -15,7 +15,7 @@ router.get('/register', function(req, res, next) {
 });
 
 router.get('/profile', function(req, res, next) {
-  res.render('profile');
+  res.render('profile-main');
 });
 
 module.exports = router;
