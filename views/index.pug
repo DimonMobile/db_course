@@ -1,15 +1,22 @@
 extends layout
 block content
-  .container
-    .row
-      -var n = 0;
-      while n < 100
-        .col.s12.m6.l4
-          .card.hoverable
-            .card-image
-              img(src='/images/backgrounds/1.jpeg')
-              span.card-title Card title
-            .card-content
-              p This is a text preview look at this #{n++}
-            .card-action
-              a(href='#') Open
+  if loginSuccess
+    p.flow-text.center-align.green-text You successfully signed in
+  else
+    .container
+      .row
+        p #{JSON.stringify(session)}
+        -var n = 0;
+        while n < 100
+          .col.s12.m6.l4
+            .card.hoverable
+              .card-image
+                img(src='/images/backgrounds/1.jpeg')
+                span.card-title Card title
+              .card-content
+                p This is a text preview look at this #{n++}
+              .card-action
+                a(href='#') Open
+  if invalidLogin
+    script M.toast({html: 'Invalid login/password, try again.'});
+  script

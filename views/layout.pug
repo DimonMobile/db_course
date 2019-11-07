@@ -24,8 +24,12 @@ html
             li.waves-effect.waves-light
               a(href='#') Third
             li.waves-effect.waves-light
-              a.modal-trigger.tooltipped(href='#account', data-tooltip='Account')
-                img.circle(src='/images/icons/person-male.png', width='40' height='40' style='vertical-align: middle')
+              if session.userId != undefined
+                a.modal-trigger.tooltipped(href='/profile/information', data-tooltip=session.userNickname)
+                    img.circle(src=session.userIconPath, width='40' height='40' style='vertical-align: middle')
+              else
+                a.modal-trigger.tooltipped(href='#account', data-tooltip='Account')
+                    img.circle(src='/images/icons/person-male.png', width='40' height='40' style='vertical-align: middle')
             li
               .input-field
                 input#search(type='search' required='')
@@ -33,18 +37,18 @@ html
                   i.material-icons search
 
     .modal#account
-      form
+      form(action='/', method='POST')
         .modal-content
             .row
               .col.s12
                 h4 Sign in
               .col.s12.input-field
                 i.material-icons.prefix account_circle
-                input#email(type='text')
+                input#email(type='text', name='email')
                 label(for='Email') Email
               .col.s12.input-field
                 i.material-icons.prefix lock
-                input#password(type='password')
+                input#password(type='password', name='password')
                 label(for='Password') Password
               .col.s12
                 p If you using our service first time it's time to 
@@ -59,7 +63,10 @@ html
           .background
             img(src='/images/backgrounds/1.jpeg')
           a.modal-trigger(href='#account')
-            img.circle(src='/images/icons/person-male.png')
+            if session.userId != undefined
+              img.circle(src=session.userIconPath)
+            else
+              img.circle(src='/images/icons/person-male.png')
           a.white-text(href='#')
             span.name Account-name
           a(href='#')
