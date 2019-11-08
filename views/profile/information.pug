@@ -7,22 +7,22 @@ block profile-selection
       a.breadcrumb#profile-page-name(href='/profile/main') Information
   .row
     .col.s12
-      h5.center-align Nickname
+      h5.center-align #{session.userNickname}
   .row
     .col.s12.l6
       .input-field
-        input#profile-nickname(type='text' value='Test', readonly)
+        input#profile-nickname(type='text' value=session.userFirstName, readonly)
         label(for='profile-first-name') First name
     .col.s12.l6
       .input-field
-        input#profile-nickname(type='text' value='Test', readonly)
+        input#profile-nickname(type='text' value=session.userLastName, readonly)
         label(for='profile-last-name') Last name
   .row
     .col.s3.l2
       b Email:
     .col.s4.l7
       a(href='#') change
-    .col.s5.l3.truncate emailaddr@example.com
+    .col.s5.l3.truncate #{session.userEmail}
 
   .row
     .col.s3.l2
@@ -40,21 +40,22 @@ block profile-selection
           span Upload new
           input(type='file' accept="image/x-png,image/gif,image/jpeg")
     .col.s5.l3
-      img.circle.materialboxed(src=session.userIconPath, width=60)
+      img.circle.materialboxed(src=session.userIconPath, width=60, height=60)
 
   .row
     .col.s3.l2
       b Group:
     .col.s9.l10
       .input-field
-        select
+        select#user-role
           optgroup(label='Unactivated')
-            option Guest
+            option(value='0') Guest
           optgroup(label='Activated')
-            option User
-            option Journalist
-            option Redactor
-            option Administrator
+            option(value='1') User
+            option(value='2') Journalist
+            option(value='3') Redactor
+            option(value='4') Administrator
+        script document.getElementById('user-role').value = #{session.userRole};
   .row
     .col
       button.btn.waves-effect.waves-light Save
