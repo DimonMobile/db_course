@@ -1,6 +1,7 @@
 var express = require('express');
 var multer = require('multer');
-var upload = multer({dest: 'public/images/avatars/'}).single('avatar');
+var uploadAvatar = multer({dest: 'public/images/avatars/'}).single('avatar');
+var uploadPicture = multer({dest: 'public/images/uploads/'}).single('image');
 var crypto = require('crypto');
 var router = express.Router();
 
@@ -59,7 +60,7 @@ router.post('/', function(req, res, next) {
   });
 });
 
-router.post('/register', upload, function (req, res, next) {
+router.post('/register', uploadAvatar, function (req, res, next) {
   oracledb.getConnection(dbconf).then(result => {
     // TODO: Add validators
     let hash = crypto.createHash('sha256').update(req.body.password).digest('hex');
@@ -76,6 +77,10 @@ router.post('/register', upload, function (req, res, next) {
     console.log(`Database connection error: ${error.message}`);
     next(error);
   });
+});
+
+router.post('/upload', uploadPicture, function (req, res, next) {
+  res.end(JSON.stringify({path: `/images/uploads/${req.file.filename}`, originalName: req.file.originalname}));
 });
 
 module.exports = router;

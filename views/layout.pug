@@ -19,11 +19,12 @@ html
             i.material-icons menu
           ul#nav-mobile.right.hide-on-med-and-down
             li.waves-effect.waves-light
-              a(href='#') First
+              a(href='#') Notifications
+                i.material-icons.left notifications
+                span.badge.new 3
             li.waves-effect.waves-light
-              a(href='#') Second
-            li.waves-effect.waves-light
-              a(href='#') Third
+              a(href='#') Messages
+                i.material-icons.left message
             li.waves-effect.waves-light
               if session.userId != undefined
                 a.modal-trigger.tooltipped(href='/profile/information', data-tooltip=session.userNickname)
@@ -74,11 +75,12 @@ html
           a(href='#')
             span.white-text.email account@email
       li
-        a(href='#') First
+        a(href='#') Notifications
+          i.material-icons.left notifications
+          span.badge.new 3
       li
-        a(href='#') Second
-      li
-        a(href='#') Third
+        a(href='#') Messages
+          i.material-icons.left message
       li
         .divider
       li
