@@ -8,6 +8,7 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.js')
+    block additionalScripts
   body
     .navbar-fixed
       nav
@@ -102,6 +103,6 @@ html
       .footer-copyright
         .container  © 2019 Dmitry Plotnikov
     .fixed-action-btn
-      a.btn-floating.btn-large.waves-effect.waves-light.pulse.waves-circle
+      a.btn-floating.btn-large.waves-effect.waves-light.pulse.waves-circle(href='/create')
         i.material-icons.large create
     script M.AutoInit();

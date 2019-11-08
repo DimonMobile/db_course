@@ -12,6 +12,10 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'PubMag', session: req.session });
 });
 
+router.get('/create', function(req, res, next) {
+  res.render('create', {session: req.session });
+});
+
 router.get('/about', function(req, res, next) {
   res.render('about', { session: req.session });
 });

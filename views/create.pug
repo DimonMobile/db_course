@@ -1,0 +1,36 @@
+extends layout
+block additionalScripts
+  script(src='/javascripts/libs/markdown.js')
+block content
+  .container
+    .row
+      .col.s12
+        ul.tabs
+          li.tab.col.s3
+            a(href='#edit').active Edit
+          li.tab.col.s3
+            a(href='#preview' onclick='document.getElementById("preview-zone").innerHTML = markdown.toHTML(document.getElementById("edit-textarea").value)') Preview
+      .col.s12#edit
+        .row
+          .col.s12.input-field
+            textarea.materialize-textarea#edit-textarea
+            label(for='edit-textarea') Your markdown text here...
+          .col.s12
+            label Tips:
+          .col.s12
+            label # H1 header
+          .col.s12
+            label ## H2 header, and so on
+          .col.s12
+            label Paste pictures using ![picturename](picttureurl)
+          .col.s12
+            label
+              a(href='https://www.markdownguide.org/getting-started') Markdown syntax
+          .cols.s12
+            button.btn Upload image
+              i.material-icons.right file_upload
+      .col.s12#preview
+        #preview-zone(style='border: 1px solid black;')
+        button.btn.right Ready? Submit!
+          i.material-icons.right send
+      
