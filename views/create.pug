@@ -2,6 +2,7 @@ extends layout
 block additionalScripts
   script(src='/javascripts/libs/markdown.js')
   script(src='/javascripts/material/image-upload.js')
+  script(src='/javascripts/material/send-post.js')
 block content
   .container
     .row
@@ -45,6 +46,16 @@ block content
             
       .col.s12#preview
         #preview-zone(style='border: 1px solid black;')
-        button.btn.right.waves-effect.waves-light Ready? Submit!
+        a.btn.right.waves-effect.waves-light.modal-trigger(href='#subject-input-modal') Ready? Submit!
           i.material-icons.right send
-      
+  
+  #subject-input-modal.modal.bottom-sheet
+    .modal-content
+      h3 New Material
+      p= 'Author: ' + session.userNickname
+      .input-field
+        input#subject-input(type='text')
+        label(for='subject-input') Subject here
+    .modal-footer
+      a#send-post.btn-flat.waves-effect.modal-close(href='#') Come on!
+

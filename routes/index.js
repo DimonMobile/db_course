@@ -2,6 +2,7 @@ var express = require('express');
 var multer = require('multer');
 var uploadAvatar = multer({dest: 'public/images/avatars/'}).single('avatar');
 var uploadPicture = multer({dest: 'public/images/uploads/'}).single('image');
+var getFields = multer();
 var crypto = require('crypto');
 var router = express.Router();
 
@@ -23,6 +24,19 @@ router.get('/about', function(req, res, next) {
 
 router.get('/register', function(req, res, next) {
   res.render('register', { session: req.session });
+});
+
+router.post('/createPost', getFields.any(), function(req, res, next) {
+  // TODO: check authorization
+  // TODO: write validators
+  oracledb.getConnection(dbconf).then(result => {
+    result.execute(`BEGIN ADD_MATERIAL(${req.session.userId}, '${req.body.subject}', '${req.body.content}'); END;`).then(result => {
+      res.end(JSON.stringify({status: 'ok'}));
+    }).catch(err => {
+      res.end(JSON.stringify({status: err.message }));
+      console.log(err.message);
+    });
+  });
 });
 
 router.post('/', function(req, res, next) {
