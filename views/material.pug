@@ -1,0 +1,29 @@
+extends layout
+
+block additionalScripts
+  script(src='/javascripts/libs/markdown.js')
+  script(src='/javascripts/material/material.js')
+
+block content
+  .container
+    .row
+      .col.xl3.s12.push-xl9
+        .card.blue.lighten-5
+          .card-content
+            .flow-text= material.subject
+          .card-content
+            p= `Created: ${material.created}`
+            span Author: 
+            a(href=`/profile/information?userId=${material.authorId}`) #{material.authorNickname}
+          if session.id != undefined
+            if session.userRole >= 3
+                if material.status === 'PENDING'
+                  .card-content
+                    p.purple-text
+                      span This material should be reviewed!
+                    a(href='#').btn.waves-effect.waves-light.red Reject
+                      i.material-icons.left not_interested
+                    a(href='#').btn.waves-effect.waves-light.pulse Accept
+                      i.material-icons.left rate_review
+      .col.xl9.s12.pull-xl3
+        #preview-zone= material.content

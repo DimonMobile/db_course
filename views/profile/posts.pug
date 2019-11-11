@@ -3,8 +3,8 @@ extends layout
 block profile-selection
   .row
     .col.s12.purple.lighten-2.hide-on-med-and-down
-      a.text-grey.breadcrumb(href='/profile/main') Profile
-      a.breadcrumb#profile-page-name(href='/profile/main') Posts
+      a.text-grey.breadcrumb(href='/profile/information') Profile
+      a.breadcrumb#profile-page-name(href='/profile/information') Posts
   .row
     table.striped.highlight
       thead
@@ -16,7 +16,8 @@ block profile-selection
       tbody
         each material in materials
           tr
-            td= material.subject
+            td
+              a(href=`/material/?id=${material.id}`) #{material.subject}
             td= material.status
             td= material.created
             td Value in process :)

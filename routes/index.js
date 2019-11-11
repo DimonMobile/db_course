@@ -1,7 +1,7 @@
 var express = require('express');
 var multer = require('multer');
-var uploadAvatar = multer({dest: 'public/images/avatars/'}).single('avatar');
-var uploadPicture = multer({dest: 'public/images/uploads/'}).single('image');
+var uploadAvatar = multer({ dest: 'public/images/avatars/' }).single('avatar');
+var uploadPicture = multer({ dest: 'public/images/uploads/' }).single('image');
 var getFields = multer();
 var crypto = require('crypto');
 var router = express.Router();
@@ -10,47 +10,88 @@ const dbconf = require('../conf/dbconf').dbconf;
 const oracledb = require('oracledb');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.render('index', { title: 'PubMag', session: req.session });
 });
 
-router.get('/create', function(req, res, next) {
-  res.render('create', {session: req.session });
+router.get('/create', function (req, res, next) {
+  res.render('create', { session: req.session });
 });
 
-router.get('/about', function(req, res, next) {
+router.get('/about', function (req, res, next) {
   res.render('about', { session: req.session });
 });
 
-router.get('/register', function(req, res, next) {
+router.get('/register', function (req, res, next) {
   res.render('register', { session: req.session });
 });
 
-router.post('/createPost', getFields.any(), function(req, res, next) {
+router.get('/material', function (req, res, next) {
+  if (req.query.id == undefined) {
+    res.redirect('/');
+    res.end();
+    return;
+  }
+
+  oracledb.getConnection(dbconf).then(async result => {
+    let procedureResult = await result.execute(`BEGIN :ret := GET_MATERIAL_INFORMATION(:id); END;`, {
+      id: req.query.id,
+      ret: { dir: oracledb.BIND_OUT, type: oracledb.CURSOR }
+    });
+    let resultSet = procedureResult.outBinds.ret;
+    let row = await resultSet.getRow();
+    if (row == undefined)
+      throw new Error('Material not found');
+    resultSet.close();
+
+    let stream = row[5];
+
+    let dataReader = function streamReader() {
+      return new Promise((resolve, reject) => {
+        let collectedData = '';
+
+        stream.on('data', chunk => {
+          collectedData += chunk;
+        });
+
+        stream.on('error', error => reject(error));
+
+        stream.on('end', () => {
+          resolve(collectedData);
+        });
+      });
+    }
+
+    let materialData = { id: row[0], authorId: row[1], authorNickname: row[2], created: row[3], subject: row[4], content: await dataReader(), status: row[6] };
+    res.render('material', { session: req.session, material: materialData });
+  }).catch(e => next(e));
+});
+
+router.post('/createPost', getFields.any(), function (req, res, next) {
   // TODO: check authorization
   // TODO: write validators
   oracledb.getConnection(dbconf).then(result => {
     result.execute(`BEGIN ADD_MATERIAL(${req.session.userId}, '${req.body.subject}', '${req.body.content}'); END;`).then(result => {
-      res.end(JSON.stringify({status: 'ok'}));
+      res.end(JSON.stringify({ status: 'ok' }));
     }).catch(err => {
-      res.end(JSON.stringify({status: err.message }));
+      res.end(JSON.stringify({ status: err.message }));
       console.log(err.message);
     });
   });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
   oracledb.getConnection(dbconf).then(result => {
 
     result.execute(`BEGIN :ret := GET_USER_DATA(:email); END;`, {
       email: req.body.email,
-      ret: {dir: oracledb.BIND_OUT, type: oracledb.CURSOR}
+      ret: { dir: oracledb.BIND_OUT, type: oracledb.CURSOR }
     }).then(result => {
       let resultSet = result.outBinds.ret;
       resultSet.getRow().then(row => {
         resultSet.close();
         let hash = crypto.createHash('sha256').update(req.body.password).digest('hex');
-        
+
         if (row != undefined && hash == row[2]) {
           req.session.userId = row[0];
           req.session.userEmail = row[1];
@@ -59,9 +100,9 @@ router.post('/', function(req, res, next) {
           req.session.userNickname = row[5];
           req.session.userRole = row[9];
           req.session.userIconPath = `/images/avatars/${row[10]}`;
-          res.render('index', {loginSuccess: true, session: req.session});
+          res.render('index', { loginSuccess: true, session: req.session });
         } else {
-          res.render('index', {invalidLogin: true, session: req.session});
+          res.render('index', { invalidLogin: true, session: req.session });
         }
       });
     }).catch(error => {
@@ -93,7 +134,7 @@ router.post('/register', uploadAvatar, function (req, res, next) {
 });
 
 router.post('/upload', uploadPicture, function (req, res, next) {
-  res.end(JSON.stringify({path: `/images/uploads/${req.file.filename}`, originalName: req.file.originalname}));
+  res.end(JSON.stringify({ path: `/images/uploads/${req.file.filename}`, originalName: req.file.originalname }));
 });
 
 module.exports = router;
