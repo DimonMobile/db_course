@@ -4,9 +4,9 @@ block content
     .row
       .col.s12.l3
         .collection
-          a.collection-item.waves-effect(href='/profile/information') Information
-          a.collection-item.waves-effect(href='/profile/posts') Posts
-          a.collection-item.waves-effect(href='/profile/administration') Administration
+          a.collection-item.waves-effect(href=`/profile/information?userId=${req.query.userId}`) Information
+          a.collection-item.waves-effect(href=`/profile/posts?userId=${req.query.userId}`) Posts
+          a.collection-item.waves-effect(href=`/profile/administration?userId=${req.query.userId}`) Administration
       .col.s12.l9
         row
           block profile-selection

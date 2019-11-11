@@ -27,7 +27,7 @@ html
                 i.material-icons.left message
             li.waves-effect.waves-light
               if session.userId != undefined
-                a.modal-trigger.tooltipped(href='/profile/information', data-tooltip=session.userNickname)
+                a.modal-trigger.tooltipped(href=`/profile/information?userId=${session.userId}`, data-tooltip=session.userNickname)
                     img.circle(src=session.userIconPath, width='40' height='40' style='vertical-align: middle')
               else
                 a.modal-trigger.tooltipped(href='#account', data-tooltip='Account')
@@ -65,7 +65,7 @@ html
           .background
             img(src='/images/backgrounds/1.jpeg')
           if session.userId != undefined
-            a.modal-trigger.tooltipped(href='/profile/information', data-tooltip=session.userNickname)
+            a.modal-trigger.tooltipped(href=`/profile/information?userId=${session.userId}`, data-tooltip=session.userNickname)
               img.circle(src=session.userIconPath, width='40' height='40' style='vertical-align: middle')
           else
             a.modal-trigger.tooltipped(href='#account', data-tooltip='Account')

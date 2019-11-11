@@ -49,7 +49,6 @@ router.post('/', function(req, res, next) {
       let resultSet = result.outBinds.ret;
       resultSet.getRow().then(row => {
         resultSet.close();
-
         let hash = crypto.createHash('sha256').update(req.body.password).digest('hex');
         
         if (row != undefined && hash == row[2]) {

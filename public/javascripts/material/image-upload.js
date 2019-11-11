@@ -41,18 +41,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
         spanElement.appendChild(spanHrefElement);
         rootElement.appendChild(spanElement);
 
-        let rootHrefElement = document.createElement('a');
-        rootHrefElement.classList.add('secondary-content');
-        rootHrefElement.setAttribute('href', '#');
-        spanHrefElement.setAttribute('onclick', `insertPicture("${name}", "${path}");`);
-
-        let iconElement = document.createElement('i');
-        iconElement.classList.add('material-icons');
-        iconElement.textContent = 'add_circle_outlined';
-        rootHrefElement.appendChild(iconElement);
-
-        rootElement.appendChild(rootHrefElement);
-
         uploadCollection.appendChild(rootElement);
     }
 
