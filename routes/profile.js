@@ -31,8 +31,10 @@ router.get('/posts', function(req, res, next) {
         let status;
         if (row[5] === 'PENDING') {
           status = 'On review';
-        } else {
-          status = 'Lost: contact administrator'
+        } else if (row[5] === 'DEFAULT') {
+          status = 'Posted';
+        } else if (row[5] == 'REJECTED') {
+          status = 'Rejected';
         }
         materials.push({id: row[0], subject: row[2], created: row[4], status: status});
       }

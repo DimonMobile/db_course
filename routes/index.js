@@ -9,7 +9,6 @@ var router = express.Router();
 const dbconf = require('../conf/dbconf').dbconf;
 const oracledb = require('oracledb');
 
-/* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'PubMag', session: req.session });
 });
@@ -30,6 +29,25 @@ router.get('/material', function (req, res, next) {
   if (req.query.id == undefined) {
     res.redirect('/');
     res.end();
+    return;
+  }
+
+  if (req.query.action !== undefined) {
+    if (req.query.action !== undefined) {
+      if (req.session.userRole === undefined || req.session.userRole < 3) {
+        throw new Error('Access granted! If you think that it is wrong, please contact the administrator.');
+      }
+
+      oracledb.getConnection(dbconf).then(async connection => {
+        if (req.query.action === 'accept') {
+          await connection.execute(`BEGIN SET_MATERIAL_STATUS(${req.query.id}, 'DEFAULT'); END;`);
+        } else if (req.query.action == 'reject') {
+          await connection.execute(`BEGIN SET_MATERIAL_STATUS(${req.query.id}, 'REJECTED'); END;`);
+        }
+        res.redirect(`/material?id=${req.query.id}`);
+        return;
+      }).catch(e => next(e));
+    }
     return;
   }
 

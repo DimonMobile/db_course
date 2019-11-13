@@ -7,7 +7,7 @@ block additionalScripts
 block content
   .container
     .row
-      .col.xl3.s12.push-xl9
+      .col.xl3.l12.s12.push-xl9
         .card.blue.lighten-5
           .card-content
             .flow-text= material.subject
@@ -21,9 +21,29 @@ block content
                   .card-content
                     p.purple-text
                       span This material should be reviewed!
-                    a(href='#').btn.waves-effect.waves-light.red Reject
-                      i.material-icons.left not_interested
-                    a(href='#').btn.waves-effect.waves-light.pulse Accept
+                    a(href=`/material?id=${material.id}&action=accept`).btn.waves-effect.waves-light Accept
                       i.material-icons.left rate_review
-      .col.xl9.s12.pull-xl3
+                    a(href=`/material?id=${material.id}&action=reject`).btn.waves-effect.waves-light.red Reject
+                      i.material-icons.left not_interested
+      .col.xl9.l12.pull-xl3
         #preview-zone= material.content
+    if material.status !== 'PENDING'
+      .row
+        if session.userId != undefined
+          .col.m1.hide-on-med-and-down
+            img.circle(src=`${session.userIconPath}` width=54 height=54)
+          .col.s12.m10
+            .input-field
+              textarea.materialize-textarea#comment-textarea
+              label(for='comment-textarea') Type a comment
+          .col.m1.s12
+            button.btn.waves-effect.waves-light Post
+        else
+          a.btn.waves-effect.waves-light.modal-trigger.tooltipped(href='#account', data-tooltip='Account') Sign in to leave a comment
+      .row
+        .col.s12
+          ul.collection
+            li.collection-item.avatar
+              img.circle(src='/images/icons/person-male.png')
+              span.title.flow-text Nickname
+              p Contnet long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text
