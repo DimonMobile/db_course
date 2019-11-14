@@ -42,18 +42,18 @@ router.post('/getComments', async function (req, res, next) {
     let row;
     while ((row = await resultSet.getRow())) {
       let commentObject = {
-        id: row[0],
-        author_id: row[1],
-        nickname: row[2],
-        content: row[3],
-        created: row[4]
+        id: row[1],
+        author_id: row[2],
+        nickname: row[3],
+        content: row[4],
+        created: row[5],
+        iconPath: row[6]
       }
       commentsArray.push(commentObject);
     }
 
     let commentsObject = {
       items: commentsArray,
-      size: row[5]
     }
     // COMMENTS.ID, COMMENTS.AUTHOR_ID, USERS.NICKNAME, COMMENTS.CONTENT, COMMENTS.CREATED
 

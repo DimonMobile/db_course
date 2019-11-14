@@ -33,18 +33,28 @@ block content
         if session.userId != undefined
           .col.m1.hide-on-med-and-down
             img.circle(src=`${session.userIconPath}` width=54 height=54)
-          .col.s12.m10
+          .col.s12.m9
             .input-field
               textarea.materialize-textarea#comment-textarea
               label(for='comment-textarea') Type a comment
-          .col.m1.s12
-            button.btn.waves-effect.waves-light Post
+          .col.m2.s12
+            button#post-comment-btn.btn.waves-effect.waves-light Post
+              i.material-icons.right send
         else
           a.btn.waves-effect.waves-light.modal-trigger.tooltipped(href='#account', data-tooltip='Account') Sign in to leave a comment
+      
       .row
         .col.s12
-          ul.collection
-            li.collection-item.avatar
-              img.circle(src='/images/icons/person-male.png')
-              span.title.flow-text Nickname
-              p Contnet long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text long long text
+          ul.collection#comments-row
+      .row
+        .col.s12.offset-l5.offset-m4
+          input#id-field(type='hidden' value=`${material.id}`)
+          #fetch-preloader.preloader-wrapper.active.hide
+              .spinner-layer.spinner-blue-only
+                .circle-clipper.left
+                  .circle
+                .gap-patch
+                  .circle
+                .circle-clipper.right
+                  .circle
+          button#fetch-more-btn.btn.btn-large.waves-effect.waves-light.center-align Fetch more
