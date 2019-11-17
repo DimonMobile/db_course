@@ -5,7 +5,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     let fetchPreloader = document.getElementById('fetch-preloader');
     let idField = document.getElementById('id-field');
     let commentsRow = document.getElementById('comments-row');
-    let offset = 0;
+    let offset = 1;
 
     function enableFetchBtn(state) {
         if (state) {

@@ -4,10 +4,6 @@ var router = express.Router();
 const dbconf = require('../conf/dbconf').dbconf;
 const oracledb = require('oracledb');
 
-router.get('/getComments', function (req, res, next) {
-
-});
-
 router.post('/getComments', async function (req, res, next) {
   // GET_COMMENTS(nMaterialId number, nOffset number, nCount number)
   try {
@@ -21,7 +17,7 @@ router.post('/getComments', async function (req, res, next) {
     if (req.body.material_id === undefined) {
       throw new Error('Bad request.');
     }
-    let offset = 0;
+    let offset = 1;
     let count = 10;
     if (req.body.offset !== undefined)
       offset = parseInt(req.body.offset);
@@ -31,7 +27,7 @@ router.post('/getComments', async function (req, res, next) {
     let connection = await oracledb.getConnection(dbconf);
     let procedureResult = await connection.execute(`BEGIN :ret := GET_COMMENTS(:id, :offset, :count); END;`, {
       id: req.body.material_id,
-      offset: offset, 
+      offset: offset,
       count: count,
       ret: { dir: oracledb.BIND_OUT, type: oracledb.CURSOR }
     });
@@ -65,6 +61,109 @@ router.post('/getComments', async function (req, res, next) {
   } catch (e) {
     res.end(JSON.stringify({ error: e.message }));
   }
+});
+
+router.post('/getMaterials', async function (req, res, next) {
+  try {
+    if (req.session.userId === undefined) {
+      throw new Error('Insufficient permissions. User is not authorized.');
+    }
+
+    if (req.body.status === undefined) {
+      throw new Error('Bad request.');
+    }
+
+    if (req.session.userRole === undefined || req.session.userRole < 3) {
+      throw new Error('Access granted! If you think that it is wrong, please contact the administrator.');
+    }
+
+    let offset = 1;
+    let count = 10;
+    if (req.body.offset !== undefined)
+      offset = parseInt(req.body.offset);
+    if (req.body.count !== undefined)
+      count = Math.min(parseInt(req.body.count), 10);
+
+    console.log(`Get comments as count = ${count}, offset = ${offset}`);
+    let connection = await oracledb.getConnection(dbconf);
+    let procedureResult = await connection.execute(`BEGIN :ret := GET_MATERIALS(:status, :offset, :count); END;`, {
+      status: req.body.status,
+      offset: offset,
+      count: count,
+      ret: { dir: oracledb.BIND_OUT, type: oracledb.CURSOR }
+    });
+
+    let resultSet = procedureResult.outBinds.ret;
+    let row;
+    let resultArray = [];
+    while (row = await resultSet.getRow()) {
+      // id created subject status
+      resultArray.push({
+        id: row[1],
+        created: row[2],
+        subject: row[3],
+        status: row[4]
+      });
+    }
+    resultSet.close();
+
+    let resultObject = {
+      items: resultArray
+    }
+
+    res.end(JSON.stringify(resultObject));
+  } catch (e) {
+    res.end(JSON.stringify({ error: e.message }));
+  };
+});
+
+router.post('/getUsers', async function (req, res, next) {
+  try {
+    if (req.session.userId === undefined) {
+      throw new Error('Insufficient permissions. User is not authorized.');
+    }
+
+    if (req.session.userRole === undefined || req.session.userRole < 4) {
+      throw new Error('Access granted! If you think that it is wrong, please contact the administrator.');
+    }
+
+    let offset = 1;
+    let count = 10;
+    if (req.body.offset !== undefined)
+      offset = parseInt(req.body.offset);
+    if (req.body.count !== undefined)
+      count = Math.min(parseInt(req.body.count), 10);
+
+    let connection = await oracledb.getConnection(dbconf);
+    let procedureResult = await connection.execute(`BEGIN :ret := GET_USERS(:offset, :count); END;`, {
+      offset: offset,
+      count: count,
+      ret: { dir: oracledb.BIND_OUT, type: oracledb.CURSOR }
+    });
+
+    let resultSet = procedureResult.outBinds.ret;
+    let row;
+    let resultArray = [];
+    while (row = await resultSet.getRow()) {
+      // id created subject status
+      resultArray.push({
+        id: row[1],
+        nickname: row[2],
+        email: row[3],
+        role: row[4],
+        created: row[5]
+      });
+    }
+    resultSet.close();
+
+    let resultObject = {
+      items: resultArray
+    }
+
+    res.end(JSON.stringify(resultObject));
+  } catch (e) {
+    res.end(JSON.stringify({ error: e.message }));
+  };
 });
 
 router.post('/postComment', async function (req, res, next) {
