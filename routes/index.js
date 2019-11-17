@@ -88,6 +88,10 @@ router.get('/material', function (req, res, next) {
 router.post('/createPost', getFields.any(), function (req, res, next) {
   // TODO: check authorization
   // TODO: write validators
+  if (req.session.userRole < 3)
+  {
+    res.end(JSON.stringify({error: 'Access denied!'}));
+  }
   oracledb.getConnection(dbconf).then(result => {
     result.execute(`BEGIN ADD_MATERIAL(${req.session.userId}, '${req.body.subject}', '${req.body.content}'); END;`).then(result => {
       res.end(JSON.stringify({ status: 'ok' }));

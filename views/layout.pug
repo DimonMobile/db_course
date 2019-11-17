@@ -104,7 +104,8 @@ html
                 a.grey-text.text-lighten-3(href='/about') About
       .footer-copyright
         .container  © 2019 Dmitry Plotnikov
-    .fixed-action-btn
-      a.btn-floating.btn-large.waves-effect.waves-light.pulse.waves-circle(href='/create')
-        i.material-icons.large create
+    if session.userRole >= 2
+      .fixed-action-btn
+        a.btn-floating.btn-large.waves-effect.waves-light.pulse.waves-circle(href='/create')
+          i.material-icons.large create
     script M.AutoInit();

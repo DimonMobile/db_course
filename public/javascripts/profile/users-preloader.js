@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
                 let nicknameTD = document.createElement('td');
                 let link = document.createElement('a');
-                link.setAttribute('href', `/profile/information?id=${currentUser.id}`);
+                link.setAttribute('href', `/profile/information?userId=${currentUser.id}`);
                 link.innerText = currentUser.nickname;
                 nicknameTD.appendChild(link);
 

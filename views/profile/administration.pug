@@ -2,7 +2,8 @@ extends layout
 
 block additionalScripts
   script(src='/javascripts/profile/materials-preloader.js')
-  script(src='/javascripts/profile/users-preloader.js')
+  if session.userRole === 4
+    script(src='/javascripts/profile/users-preloader.js')
 
 block profile-selection
   .row
@@ -45,34 +46,35 @@ block profile-selection
                     td loading... 
                     td 1998-05-07
                     td POSTED
-        li
-          .collapsible-header.waves-effect.waves-teal
-            i.material-icons person_outline
-            | Users
-          .collapsible-body
-            .row
-              .col.s12
-                button#prev-users-btn.btn Prev
-                button#next-users-btn.btn Next
-            .row
-              .col.s12
-                table
-                  thead
-                    tr
-                      th Id
-                      th Nickname
-                      th Email
-                      th Role
-                      th Registered
-                  tbody#users-tbody
-                    tr
-                      td 1
-                      td loading... 
-                      td 1998-05-07
-                      td POSTED
-        li
-          .collapsible-header.waves-effect.waves-purple
-            i.material-icons import_export
-            | Xml import/export
-          .collapsible-body bar
+        if session.userRole === 4
+          li
+            .collapsible-header.waves-effect.waves-teal
+              i.material-icons person_outline
+              | Users
+            .collapsible-body
+              .row
+                .col.s12
+                  button#prev-users-btn.btn.waves-effect.waves-light Prev
+                  button#next-users-btn.btn.waves-effect.waves-light Next
+              .row
+                .col.s12
+                  table
+                    thead
+                      tr
+                        th Id
+                        th Nickname
+                        th Email
+                        th Role
+                        th Registered
+                    tbody#users-tbody
+                      tr
+                        td 1
+                        td loading... 
+                        td 1998-05-07
+                        td POSTED
+          li
+            .collapsible-header.waves-effect.waves-purple
+              i.material-icons import_export
+              | Xml import/export
+            .collapsible-body bar
         

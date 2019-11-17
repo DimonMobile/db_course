@@ -166,6 +166,32 @@ router.post('/getUsers', async function (req, res, next) {
   };
 });
 
+router.post('/setUserRole', async function (req, res, next) {
+  try {
+    if (req.session.userId === undefined) {
+      throw new Error('Insufficient permissions. User is not authorized.');
+    }
+
+    if (req.session.userRole !== 4) {
+      throw new Error('Insufficient permissions.');
+    }
+
+    if (req.body.id === undefined || req.body.role === undefined) {
+      throw new Error('Bad request.');
+    }
+
+    let connection = await oracledb.getConnection(dbconf);
+    let procedureResult = await connection.execute(`BEGIN SET_USER_ROLE(:id, :role); END;`, {
+      id: req.body.id,
+      role: req.body.role
+    });
+
+    res.end(JSON.stringify({status: 'ok'}));
+  } catch (e) {
+    res.end(JSON.stringify({ error: e.message }));
+  }
+});
+
 router.post('/postComment', async function (req, res, next) {
   try {
     if (req.session.userId === undefined) {
