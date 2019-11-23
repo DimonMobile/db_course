@@ -88,7 +88,7 @@ router.get('/material', function (req, res, next) {
 router.post('/createPost', getFields.any(), function (req, res, next) {
   // TODO: check authorization
   // TODO: write validators
-  if (req.session.userRole < 3)
+  if (req.session.userRole < 2)
   {
     res.end(JSON.stringify({error: 'Access denied!'}));
   }

@@ -1,21 +1,48 @@
 extends layout
+
+block additionalScripts
+  script(src='javascripts/feed.js')
+
 block content
   if loginSuccess
     p.flow-text.center-align.green-text You successfully signed in
   else
     .container
+      .row#feed-container
       .row
-        -var n = 0;
-        while n < 100
-          .col.s12.m6.xl4
-            .card.hoverable
-              .card-image
-                img(src='/images/backgrounds/1.jpeg')
-                span.card-title Card title
-              .card-content
-                p This is a text preview look at this #{n++}
-              .card-action
-                a(href='#') Open
+        .col.s12.offset-s6
+          button#fetch-feed-btn.btn-floating.btn-large.waves-effect.red.waves-light.scale-transition
+            i.material-icons more_horiz
+        .col.s12.offset-s6
+          #fetch-feed-indicator.preloader-wrapper.active.big.hide
+            .spinner-layer.spinner-red
+              .circle-clipper.left
+                .circle
+              .gap-patch
+                .circle
+              .circle-clipper.right
+                .circle
+            .spinner-layer.spinner-blue
+              .circle-clipper.left
+                .circle
+              .gap-patch
+                .circle
+              .circle-clipper.right
+                .circle
+            .spinner-layer.spinner-green
+              .circle-clipper.left
+                .circle
+              .gap-patch
+                .circle
+              .circle-clipper.right
+                .circle
+            .spinner-layer.spinner-yellow
+              .circle-clipper.left
+                .circle
+              .gap-patch
+                .circle
+              .circle-clipper.right
+                .circle
   if invalidLogin
     script M.toast({html: 'Invalid login/password, try again.'});
   script

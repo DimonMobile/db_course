@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 M.toast({html: 'Uploaded!'});
                 window.location.href = '/profile/posts';
             } else {
-                M.toast({html: 'Uploading error, try again later'});
+                M.toast({html: `Uploading error, try again later<br>Error: ${resObject.error}`});
                 sendPostHref.classList.remove('disabled');
             }
         });

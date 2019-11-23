@@ -28,7 +28,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         rootElement.appendChild(imgElement);
 
         let spanElement = document.createElement('a');
-        spanElement.setAttribute('href', `/profile/information?id=${id}`);
+        spanElement.setAttribute('href', `/profile/information?userId=${id}`);
         spanElement.classList.add('title');
         spanElement.classList.add('flow-text');
         spanElement.innerText = nickname;

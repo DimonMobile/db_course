@@ -4,6 +4,86 @@ var router = express.Router();
 const dbconf = require('../conf/dbconf').dbconf;
 const oracledb = require('oracledb');
 
+router.post('/getNotifications', async function (req, res, next) {
+  try {
+    if (req.session.userId === undefined) {
+      throw new Error('Insufficient permissions. User is not authorized.');
+    }
+    let connection = await oracledb.getConnection(dbconf);
+    let procedureResult = await connection.execute(`BEGIN :ret := GET_USER_NOTIFICATIONS(:user_id); END;`, {
+      user_id: req.session.userId,
+      ret: { dir: oracledb.BIND_OUT, type: oracledb.CURSOR }
+    });
+    let resultSet = procedureResult.outBinds.ret;
+
+    let row;
+    let resultArray = [];
+    while ((row = await resultSet.getRow())) {
+      resultArray.push({
+        created: row[2],
+        content: row[3]
+      });
+    }
+    resultSet.close();
+    res.end(JSON.stringify({items: resultArray}));
+  } catch (e) {
+    res.end(JSON.stringify({error: e.message}));
+  }
+});
+
+router.post('/getFeed', async function (req, res, next) {
+  try {
+    let offset = 1;
+    let count = 10;
+    if (req.body.offset !== undefined)
+      offset = parseInt(req.body.offset);
+    if (req.body.count !== undefined)
+      count = Math.min(parseInt(req.body.count), 10);
+
+    let connection = await oracledb.getConnection(dbconf);
+    let procedureResult = await connection.execute(`BEGIN :ret := GET_MATERIALS_FULL(:offset, :count); END;`, {
+      offset: offset,
+      count: count,
+      ret: { dir: oracledb.BIND_OUT, type: oracledb.CURSOR }
+    });
+    let resultSet = procedureResult.outBinds.ret;
+
+    let row;
+
+    let resultArray = [];
+    while ((row = await resultSet.getRow())) {
+
+      let stream = row[4];
+      let dataReader = function streamReader() {
+        return new Promise((resolve, reject) => {
+          let collectedData = '';
+  
+          stream.on('data', chunk => {
+            collectedData += chunk;
+          });
+  
+          stream.on('error', error => reject(error));
+  
+          stream.on('end', () => {
+            resolve(collectedData);
+          });
+        });
+      }
+
+      resultArray.push({
+        id: row[1],
+        created: row[2],
+        subject: row[3],
+        content: await dataReader()
+      });
+    }
+    await resultSet.close();
+    res.end(JSON.stringify({items: resultArray}));
+  } catch (e) {
+    res.end(JSON.stringify({error: e.message}));
+  }
+});
+
 router.post('/getComments', async function (req, res, next) {
   // GET_COMMENTS(nMaterialId number, nOffset number, nCount number)
   try {
@@ -53,7 +133,7 @@ router.post('/getComments', async function (req, res, next) {
     }
     // COMMENTS.ID, COMMENTS.AUTHOR_ID, USERS.NICKNAME, COMMENTS.CONTENT, COMMENTS.CREATED
 
-    resultSet.close();
+    await resultSet.close();
     res.end(JSON.stringify(commentsObject));
     // GET_COMMENTS(nMaterialId number, nOffset number, nCount number)
 
@@ -105,7 +185,7 @@ router.post('/getMaterials', async function (req, res, next) {
         status: row[4]
       });
     }
-    resultSet.close();
+    await resultSet.close();
 
     let resultObject = {
       items: resultArray
@@ -154,7 +234,7 @@ router.post('/getUsers', async function (req, res, next) {
         created: row[5]
       });
     }
-    resultSet.close();
+    await resultSet.close();
 
     let resultObject = {
       items: resultArray
@@ -214,7 +294,7 @@ router.post('/postComment', async function (req, res, next) {
 
     let resultSet = procedureResult.outBinds.ret;
     let row = await resultSet.getRow();
-    resultSet.close();
+    await resultSet.close();
     if (row == undefined)
       throw new Error('Material not found');
 

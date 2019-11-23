@@ -8,6 +8,7 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.js')
+    script(src='/javascripts/notifications.js')
     block additionalScripts
   body
     .navbar-fixed
@@ -19,12 +20,8 @@ html
             i.material-icons menu
           ul#nav-mobile.right.hide-on-med-and-down
             li.waves-effect.waves-light
-              a(href='#') Notifications
+              a(href='#').notification-btn Notifications
                 i.material-icons.left notifications
-                span.badge.new 3
-            li.waves-effect.waves-light
-              a(href='#') Messages
-                i.material-icons.left message
             li.waves-effect.waves-light
               if session.userId != undefined
                 a.tooltipped(href=`/profile/information?userId=${session.userId}`, data-tooltip=session.userNickname)
@@ -75,12 +72,8 @@ html
           a(href='#')
             span.white-text.email account@email
       li
-        a(href='#') Notifications
+        a(href='#').notification-btn Notifications
           i.material-icons.left notifications
-          span.badge.new 3
-      li
-        a(href='#') Messages
-          i.material-icons.left message
       li
         .divider
       li
