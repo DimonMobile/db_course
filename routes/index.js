@@ -90,9 +90,41 @@ router.get('/material', function (req, res, next) {
   }).catch(e => next(e));
 });
 
-router.get('/search', function(req, res, next) {
+router.get('/getXml', async function (req, res, next) {
+  if (req.session.userId === undefined || req.session.userRole < 4) {
+    next(new Error('Access denied!'));
+    return;
+  }
+
+  let connection = await oracledb.getConnection(dbconf);
+  let procedureResult = await connection.execute(`BEGIN :ret := EXPORT_USERS; END;`, {
+    ret: { dir: oracledb.BIND_OUT, type: oracledb.CLOB }
+  });
+
+  let resultSet = procedureResult.outBinds.ret;
+  
+  let dataReader = function streamReader() {
+    return new Promise((resolve, reject) => {
+      let collectedData = '';
+
+      resultSet.on('data', chunk => {
+        collectedData += chunk;
+      });
+
+      resultSet.on('error', error => reject(error));
+
+      resultSet.on('end', () => {
+        resolve(collectedData);
+      });
+    });
+  }
+
+  res.end(await dataReader(), 'application/xml');
+});
+
+router.get('/search', function (req, res, next) {
   if (req.query.q === undefined) {
-    res.render('search', {session: req.session, req: req});
+    res.render('search', { session: req.session, req: req });
   } else {
     client.search({
       index: 'pub-house',
@@ -104,12 +136,12 @@ router.get('/search', function(req, res, next) {
         }
       }
     }).then(function (resp) {
-        var hits = resp.hits.hits;
-        res.render('search', {session: req.session, hits: hits, req: req});
-        console.log(hits);
+      var hits = resp.hits.hits;
+      res.render('search', { session: req.session, hits: hits, req: req });
+      console.log(hits);
     }).catch(function (err) {
-        console.trace(err.message);
-        next(err);
+      console.trace(err.message);
+      next(err);
     });
   }
 });
@@ -117,9 +149,8 @@ router.get('/search', function(req, res, next) {
 router.post('/createPost', getFields.any(), function (req, res, next) {
   // TODO: check authorization
   // TODO: write validators
-  if (req.session.userRole < 2)
-  {
-    res.end(JSON.stringify({error: 'Access denied!'}));
+  if (req.session.userRole < 2) {
+    res.end(JSON.stringify({ error: 'Access denied!' }));
   }
   oracledb.getConnection(dbconf).then(result => {
     result.execute(`BEGIN ADD_MATERIAL(${req.session.userId}, '${req.body.subject}', '${req.body.content}'); END;`).then(async result => {
