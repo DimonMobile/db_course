@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col.s12
+        form(method='GET' action='/search')
+          .input-field
+            input#search-input(type='text' name='q')
+            label(for='search-input' value=req.query.q) Search query here
+          .input-field
+            input(type='submit' value='Search').btn
+    if hits
+      .row
+        .col.s12
+          h3= `${hits.length} search result${hits.length > 1 ? 's' : ''} below...`
+          ul.collection
+            each item in hits
+              li.collection-item
+                span.title= item._source.subject
+                p= item._source.content

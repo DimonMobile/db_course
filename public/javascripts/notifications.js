@@ -1,5 +1,13 @@
 window.addEventListener('DOMContentLoaded', (event) => {
     let btns = document.getElementsByClassName('notification-btn');
+    let search = document.getElementById('search');
+
+    search.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            window.location.href = `/search?q=${encodeURIComponent(search.value)}`;
+        }
+    });
+
     for (let btn of btns) {
         btn.addEventListener('click', e => {
             let req = new XMLHttpRequest();

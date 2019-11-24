@@ -5,6 +5,11 @@ var uploadPicture = multer({ dest: 'public/images/uploads/' }).single('image');
 var getFields = multer();
 var crypto = require('crypto');
 var router = express.Router();
+var elasticsearch = require('elasticsearch');
+var client = new elasticsearch.Client({
+  host: 'localhost:9200',
+  log: 'trace'
+});
 
 const dbconf = require('../conf/dbconf').dbconf;
 const oracledb = require('oracledb');
@@ -85,6 +90,30 @@ router.get('/material', function (req, res, next) {
   }).catch(e => next(e));
 });
 
+router.get('/search', function(req, res, next) {
+  if (req.query.q === undefined) {
+    res.render('search', {session: req.session, req: req});
+  } else {
+    client.search({
+      index: 'pub-house',
+      body: {
+        query: {
+          match: {
+            content: req.query.q
+          }
+        }
+      }
+    }).then(function (resp) {
+        var hits = resp.hits.hits;
+        res.render('search', {session: req.session, hits: hits, req: req});
+        console.log(hits);
+    }).catch(function (err) {
+        console.trace(err.message);
+        next(err);
+    });
+  }
+});
+
 router.post('/createPost', getFields.any(), function (req, res, next) {
   // TODO: check authorization
   // TODO: write validators
@@ -93,8 +122,15 @@ router.post('/createPost', getFields.any(), function (req, res, next) {
     res.end(JSON.stringify({error: 'Access denied!'}));
   }
   oracledb.getConnection(dbconf).then(result => {
-    result.execute(`BEGIN ADD_MATERIAL(${req.session.userId}, '${req.body.subject}', '${req.body.content}'); END;`).then(result => {
+    result.execute(`BEGIN ADD_MATERIAL(${req.session.userId}, '${req.body.subject}', '${req.body.content}'); END;`).then(async result => {
       res.end(JSON.stringify({ status: 'ok' }));
+      await client.index({
+        index: 'pub-house',
+        body: {
+          subject: req.body.subject,
+          content: req.body.content
+        }
+      });
     }).catch(err => {
       res.end(JSON.stringify({ status: err.message }));
       console.log(err.message);
