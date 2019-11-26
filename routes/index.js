@@ -10,9 +10,20 @@ var client = new elasticsearch.Client({
   host: 'localhost:9200',
   log: 'trace'
 });
+var confirmPageAddress = 'http://127.0.0.1:3000/confirm'
 
 const dbconf = require('../conf/dbconf').dbconf;
 const oracledb = require('oracledb');
+const mailCreds = require('C:/Users/Admin/Documents/creds.js');
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+  service: mailCreds.service,
+  auth: {
+    user: mailCreds.email,
+    pass: mailCreds.password
+  }
+});
 
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'PubMag', session: req.session });
@@ -102,7 +113,7 @@ router.get('/getXml', async function (req, res, next) {
   });
 
   let resultSet = procedureResult.outBinds.ret;
-  
+
   let dataReader = function streamReader() {
     return new Promise((resolve, reject) => {
       let collectedData = '';
@@ -182,16 +193,20 @@ router.post('/', function (req, res, next) {
         let hash = crypto.createHash('sha256').update(req.body.password).digest('hex');
 
         if (row != undefined && hash == row[2]) {
-          req.session.userId = row[0];
-          req.session.userEmail = row[1];
-          req.session.userFirstName = row[3];
-          req.session.userLastName = row[4];
-          req.session.userNickname = row[5];
-          req.session.userRole = row[9];
-          req.session.userIconPath = `/images/avatars/${row[10]}`;
-          res.render('index', { loginSuccess: true, session: req.session });
+          if (row[9] === 0) {
+            res.render('index', { invalidLogin: true, session: req.session, loginMessage: 'Please confirm your email address, before you can access the account!' });
+          } else {
+            req.session.userId = row[0];
+            req.session.userEmail = row[1];
+            req.session.userFirstName = row[3];
+            req.session.userLastName = row[4];
+            req.session.userNickname = row[5];
+            req.session.userRole = row[9];
+            req.session.userIconPath = `/images/avatars/${row[10]}`;
+            res.render('index', { loginSuccess: true, session: req.session });
+          }
         } else {
-          res.render('index', { invalidLogin: true, session: req.session });
+          res.render('index', { invalidLogin: true, session: req.session, loginMessage: 'Login/password pair is incorrect' });
         }
       });
     }).catch(error => {
@@ -203,13 +218,40 @@ router.post('/', function (req, res, next) {
   });
 });
 
+router.get('/confirm', async function (req, res, next) {
+  try {
+    let connection = await oracledb.getConnection(dbconf);
+    let procedureResult = await connection.execute(`BEGIN  CONFIRM_TOKEN('${req.query.token}'); END;`);
+    res.render('index', { invalidLogin: true, session: req.session, loginMessage: 'Your account was confirmed!' });
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.post('/register', uploadAvatar, function (req, res, next) {
-  oracledb.getConnection(dbconf).then(result => {
+  oracledb.getConnection(dbconf).then(connection => {
     // TODO: Add validators
     let hash = crypto.createHash('sha256').update(req.body.password).digest('hex');
+    let token = crypto.createHash('sha256').update(req.body.email + 'saltsaltsalt').digest('hex');
     console.log(`Uplaoaded ${req.file.filename} || ${req.file.path}`);
     const procstr = `BEGIN REGISTER_USER('${req.body.email}', '${hash}', '${req.body.first_name}', '${req.body.last_name}', '${req.body.nickname}', TO_DATE('${req.body.birthday}', 'YYYY-MM-DD'), '${req.file.filename}', ${(req.body.sendnews == 'on') ? 1 : 0}); END;`;
-    result.execute(procstr).then(result => {
+    connection.execute(procstr).then(async result => {
+      await connection.execute(`BEGIN ADD_TOKEN('${req.body.email}', '${token}'); END;`);
+      var mailOptions = {
+        from: mailCreds.email,
+        to: 'mobik.dimka@gmail.com',
+        subject: 'PubHouse confirmation',
+        text: `Confirm email by the link below ${confirmPageAddress}?token=${token}`
+      };
+
+      console.log('Sending mail...');
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
       res.render('register', { registered: true, session: req.session });
     }).catch(error => {
       console.log(`Procedure call error: ${error.message}`);
