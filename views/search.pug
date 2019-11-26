@@ -6,8 +6,8 @@ block content
       .col.s12
         form(method='GET' action='/search')
           .input-field
-            input#search-input(type='text' name='q')
-            label(for='search-input' value=req.query.q) Search query here
+            input#search-input(type='text' name='q' value=req.query.q)
+            label(for='search-input') Search query here
           .input-field
             input(type='submit' value='Search').btn
     if hits
