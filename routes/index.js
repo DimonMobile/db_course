@@ -10,7 +10,7 @@ var client = new elasticsearch.Client({
   host: 'localhost:9200',
   log: 'trace'
 });
-var confirmPageAddress = 'http://127.0.0.1:3000/confirm'
+var confirmPageAddress = 'http://192.168.100.48:3000/confirm'
 
 const dbconf = require('../conf/dbconf').dbconf;
 const oracledb = require('oracledb');
@@ -239,7 +239,7 @@ router.post('/register', uploadAvatar, function (req, res, next) {
       await connection.execute(`BEGIN ADD_TOKEN('${req.body.email}', '${token}'); END;`);
       var mailOptions = {
         from: mailCreds.email,
-        to: 'mobik.dimka@gmail.com',
+        to: req.body.email,
         subject: 'PubHouse confirmation',
         text: `Confirm email by the link below ${confirmPageAddress}?token=${token}`
       };
