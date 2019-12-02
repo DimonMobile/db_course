@@ -1,5 +1,8 @@
 extends layout
 
+block additionalScripts
+  script(src='/javascripts/libs/markdown.js')
+
 block content
   .container
     .row
@@ -18,4 +21,5 @@ block content
             each item in hits
               li.collection-item
                 span.title= item._source.subject
+                //script markdown.toHTML(#{item._source.content}); 
                 p= item._source.content

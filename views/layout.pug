@@ -68,9 +68,9 @@ html
             a.modal-trigger.tooltipped(href='#account', data-tooltip='Account')
               img.circle(src='/images/icons/person-male.png', width='40' height='40' style='vertical-align: middle')
           a.white-text(href='#')
-            span.name Account-name
+            span.name= session.userNickname
           a(href='#')
-            span.white-text.email account@email
+            span.white-text.email= session.userEmail
       li
         a(href='#').notification-btn Notifications
           i.material-icons.left notifications
