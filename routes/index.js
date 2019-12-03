@@ -164,11 +164,14 @@ router.post('/createPost', getFields.any(), function (req, res, next) {
     res.end(JSON.stringify({ error: 'Access denied!' }));
   }
   oracledb.getConnection(dbconf).then(result => {
-    result.execute(`BEGIN ADD_MATERIAL(${req.session.userId}, '${req.body.subject}', '${req.body.content}'); END;`).then(async result => {
+    result.execute(`BEGIN :ret := ADD_MATERIAL(${req.session.userId}, '${req.body.subject}', '${req.body.content.replace("'", "''")}'); END;`, {
+      ret: {dir: oracledb.BIND_OUT, type: oracledb.NUMBER}
+    }).then(async result => {
       res.end(JSON.stringify({ status: 'ok' }));
       await client.index({
         index: 'pub-house',
         body: {
+          id: result.outBinds.ret,
           subject: req.body.subject,
           content: req.body.content
         }

@@ -20,6 +20,6 @@ block content
           ul.collection
             each item in hits
               li.collection-item
-                span.title= item._source.subject
+                a.title(href=`/material?id=${item._source.id}`)= item._source.subject
                 //script markdown.toHTML(#{item._source.content}); 
-                p= item._source.content
+                //p= item._source.content
