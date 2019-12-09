@@ -6,11 +6,12 @@ var getFields = multer();
 var crypto = require('crypto');
 var router = express.Router();
 var elasticsearch = require('elasticsearch');
+var fs = require('fs');
 var client = new elasticsearch.Client({
   host: 'localhost:9200',
   log: 'trace'
 });
-var confirmPageAddress = 'http://192.168.100.48:3000/confirm'
+var confirmPageAddress = 'http://192.168.56.101:3000/confirm'
 
 const dbconf = require('../conf/dbconf').dbconf;
 const oracledb = require('oracledb');
@@ -130,7 +131,13 @@ router.get('/getXml', async function (req, res, next) {
     });
   }
 
-  res.end(await dataReader(), 'application/xml');
+  fs.writeFile('exported.xml', await dataReader(), err => {
+    if (err) {
+      res.end(JSON.stringify({error: err.message}), 'application/json');
+    } else {
+      res.end(JSON.stringify({status: 'ok'}), 'application/json');
+    }
+  });
 });
 
 router.get('/search', function (req, res, next) {

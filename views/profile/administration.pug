@@ -4,6 +4,7 @@ block additionalScripts
   script(src='/javascripts/profile/materials-preloader.js')
   if session.userRole === 4
     script(src='/javascripts/profile/users-preloader.js')
+    script(src='/javascripts/profile/xmlop.js')
 
 block profile-selection
   .row
@@ -22,7 +23,7 @@ block profile-selection
               .input-field.col.xl3.s12.push-xl9
                 .row
                   .col.s12
-                    select#materials-select
+                    select#materials-select 
                       option(value='PENDING') Pending
                       option(value='REJECTED') Rejected
                       option(value='DELETED') Deleted
@@ -77,5 +78,5 @@ block profile-selection
               i.material-icons import_export
               | Export xml
             .collapsible-body
-              a.btn.waves-effect.waves-light(href='/getXml') Export xml 
+              #xml-btn.btn.waves-effect.waves-light Export xml 
         
